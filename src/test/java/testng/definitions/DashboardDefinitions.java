@@ -1,0 +1,137 @@
+package testng.definitions;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.testng.Assert;
+
+import com.autotest.testng.actions.DashboardActions;
+import com.autotest.testng.dao.CourseDAO;
+import com.autotest.testng.dao.PengajarDAO;
+import com.autotest.testng.dao.UserDAO;
+import com.autotest.testng.locators.DashboardLocators;
+import com.autotest.testng.model.Course;
+
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Then;
+
+public class DashboardDefinitions {
+    DashboardLocators dashboardLocators = new DashboardLocators();
+    DashboardActions dashboardActions = new DashboardActions();
+    UserDAO userDAO = new UserDAO();
+    CourseDAO courseDAO = new CourseDAO();
+    static PengajarDAO pengajarDAO = new PengajarDAO();
+
+    @Then("User should see the welcome message for email {string}")
+    public void userShouldSeeTheWelcomeMessage(String email) {
+        String expectedUserName = null;
+        String actualWelcomeText = null;
+        String expectedWelcomeText = null;
+
+        try {
+            expectedUserName = userDAO.getPelajarNameByEmail(email);
+        } catch (Exception e) {
+            Assert.fail("Failed to retrieve student name from database for email " + email + ": " + e.getMessage());
+        }
+
+        Assert.assertNotNull(expectedUserName, "Expected student name not found in database for email: " + email);
+
+        actualWelcomeText = dashboardActions.getHomePageText();
+        expectedWelcomeText = "Hai, " + expectedUserName + "!";
+
+        Assert.assertEquals(actualWelcomeText, expectedWelcomeText,
+                "Welcome message mismatch. Expected: '" + expectedWelcomeText + "', Actual: '"
+                        + actualWelcomeText + "'");
+        System.out.println("Welcome message verified");
+    }
+
+    @And("User should see the page title {string}")
+    public void userShouldSeeThePageTitle(String expectedPageTitle) {
+        String actualPageTitle = dashboardActions.getPageTitle();
+        Assert.assertEquals(actualPageTitle, expectedPageTitle,
+                "Page title mismatch. Expected: '" + expectedPageTitle + "', Actual: '" + actualPageTitle + "'");
+        System.out.println("Page title verified: " + actualPageTitle);
+    }
+
+    @And("User should see all courses matching with the database records")
+    public void userShouldSeeAllCoursesMatchingWithTheDatabaseRecords() {
+        List<Course> dbCourses = courseDAO.getAllCourses();
+        // Uncomment this for debugging.
+        // System.out.println("Courses fetched from DB (" + dbCourses.size() + "): "
+        //  + dbCourses.stream().map(Course::getNamaCourse).collect(Collectors.joining(", ")));
+        List<Course> uiCourses = dashboardActions.getAllDisplayedCourses();
+        // Uncomment these 2 lines for debugging.
+//        System.out.println("Courses fetched from UI (" + uiCourses.size() + "): "
+//                + uiCourses.stream().map(Course::getNamaCourse).collect(Collectors.joining(", ")));
+
+        // Basic sanity checks
+        Assert.assertFalse(dbCourses.isEmpty(), "No courses found in the database!");
+
+        Assert.assertEquals(uiCourses.size(), dbCourses.size(),
+                "Mismatch in number of courses displayed on UI vs. in DB. UI: " + uiCourses.size() + ", DB: "
+                        + dbCourses.size());
+
+        // Convert lists to maps for easier comparison by a unique key (namaCourse)
+        Map<String, Course> dbCoursesMap = dbCourses.stream()
+                .collect(Collectors.toMap(Course::getNamaCourse, course -> course));
+
+        Map<String, Course> uiCoursesMap = uiCourses.stream()
+                .collect(Collectors.toMap(Course::getNamaCourse, course -> course));
+
+        // Verify that the set of course names is identical
+        Assert.assertTrue(dbCoursesMap.keySet().equals(uiCoursesMap.keySet()),
+                "Mismatch in course names between UI and DB. DB Names: " + dbCoursesMap.keySet() + ", UI Names: "
+                        + uiCoursesMap.keySet());
+        compareIndividualCourses(dbCoursesMap, uiCoursesMap);
+    }
+
+
+    @And("User should see the joined courses matching with the database records with email {string}")
+    public void userShouldSeeJoinedCourses(String email) throws SQLException {
+        List<Course> dbCoursesByEmail = courseDAO.getAllJoinedCoursesByEmail(email);
+        List<Course> uiCourses = dashboardActions.getAllDisplayedCourses();
+        Map<String, Course> dbCoursesMap =
+                dbCoursesByEmail.
+                        stream().
+                        collect(
+                                Collectors.toMap(Course::getNamaCourse, course -> course)
+                        );
+        Map<String, Course> uiCoursesMap =
+                uiCourses.
+                        stream().
+                        collect(
+                                Collectors.toMap(Course::getNamaCourse, course -> course));
+        compareIndividualCourses(dbCoursesMap, uiCoursesMap);
+    }
+
+    private static void compareIndividualCourses(Map<String, Course> dbCoursesMap, Map<String, Course> uiCoursesMap) {
+        // Compare attributes for each matched course
+        for (Map.Entry<String, Course> dbEntry : dbCoursesMap.entrySet()) {
+            if (uiCoursesMap.containsKey(dbEntry.getKey())) {
+                String courseName = dbEntry.getKey();
+                Course dbCourse = dbEntry.getValue();
+                Course uiCourse = uiCoursesMap.get(courseName);
+
+                System.out.println("Verifying attributes for course: '" + courseName + "'");
+
+                // Compare course names
+                Assert.assertEquals(uiCourse.getNamaCourse(), dbCourse.getNamaCourse(),
+                        "Course name mismatch for '" + courseName + "'. UI: '" + uiCourse.getNamaCourse() + "', DB: '"
+                                + dbCourse.getNamaCourse() + "'");
+
+                // Compare course images name
+                String expectedGambarLink = dbCourse.getGambarCourse();
+                String actualGambarLink = uiCourse.getGambarCourse().substring(uiCourse.getGambarCourse().
+                        indexOf("images/") + 7);
+                Assert.assertEquals(actualGambarLink, expectedGambarLink);
+
+                String expectedPengajar = pengajarDAO.getPengajarNameById(dbCourse.getIdPengajar());
+                String actualPengajar = uiCourse.getInstructorDisplayText();
+                Assert.assertEquals(actualPengajar, expectedPengajar);
+            }
+        }
+        System.out.println("All courses displayed on UI are successfully matched with database records.");
+    }
+}

@@ -19,7 +19,7 @@ import java.time.Duration;
 
 public class HelperClass {
 
-    private static WebDriver driver;
+    private static WebDriver driver = null;
     public final static int TIMEOUT = 30;
     private static int loggedInUserId;
 

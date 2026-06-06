@@ -6,34 +6,41 @@ import com.autotest.testng.utils.HelperClass;
 
 public class LoginPageActions {
 
-    LoginPageLocators loginPageLocators = null;
+    private LoginPageLocators loginPageLocators;
 
     public LoginPageActions() {
+    }
 
-        this.loginPageLocators = new LoginPageLocators();
-
-        PageFactory.initElements(HelperClass.getDriver(), loginPageLocators);
+    private LoginPageLocators getLocators() {
+        if (loginPageLocators == null) {
+            loginPageLocators = new LoginPageLocators();
+            PageFactory.initElements(
+                HelperClass.getDriver(),
+                loginPageLocators
+            );
+        }
+        return loginPageLocators;
     }
 
     public void login(String strUserName, String strPassword) {
 
         // Fill username
-        loginPageLocators.email.sendKeys(strUserName);
+        getLocators().email.sendKeys(strUserName);
 
         // Fill password
-        loginPageLocators.password.sendKeys(strPassword);
+        getLocators().password.sendKeys(strPassword);
 
     }
 
     public void clickedLoginButton() {
         // Click Login button
-        loginPageLocators.login.click();
+        getLocators().login.click();
     }
 
 
     // Get the error message of Login Page
     public String getErrorMessage() {
-        return loginPageLocators.errorMessage.getText();
+        return getLocators().errorMessage.getText();
     }
 
 }

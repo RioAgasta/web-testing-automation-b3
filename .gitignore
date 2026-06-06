@@ -5,6 +5,7 @@ target/
 
 ### IDEs
 .idea/
+.vscode/
 *.iml
 .classpath
 .project

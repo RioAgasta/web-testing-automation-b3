@@ -23,7 +23,7 @@ public class LoginPageDefinitions {
     LoginPageActions objLogin = new LoginPageActions();
     DashboardActions objDashboard = new DashboardActions();
 
-    @Given("User has opened the browser")
+    @Given("The user has opened the browser")
     public void user_has_opened_the_browser() {
         HelperClass.setUpDriver();
     }
@@ -36,12 +36,12 @@ public class LoginPageDefinitions {
         driver.get(url);
     }
 
-    @When("User enters username {string} and password {string}")
+    @When("The user enters username {string} and password {string}")
     public void go_to_home_page(String userName, String passWord) {
         objLogin.login(userName, passWord);
     }
 
-    @And("User clicks on the login button")
+    @And("The user clicks on the login button")
     public void click_login_button() {
 
         // Click Login button
@@ -49,7 +49,7 @@ public class LoginPageDefinitions {
 
     }
 
-    @Then("User is navigated to the dashboard page")
+    @And("The user is navigated to the dashboard page")
     public void user_is_navigated_to_dashboard() {
         try {
             // 1. Buat objek wait dengan durasi timeout (misalnya 10 detik)
@@ -71,7 +71,7 @@ public class LoginPageDefinitions {
         }
     }
 
-    @And("User should be able to see navigation bar for pelajar")
+    @And("The user should be able to see navigation bar for pelajar")
     public void user_should_see_all_sidebar_items() {
         List<String> expectedItems = Arrays.asList(
                 "Beranda",
@@ -81,7 +81,7 @@ public class LoginPageDefinitions {
         Assert.assertEquals(actualItems, expectedItems, "Sidebar items do not match!");
     }
 
-    @And("User should be able to see photo and username")
+    @And("The user should be able to see photo and username")
     public void userShouldSeePhotoAndUsername() {
         // Cek foto user
         Assert.assertTrue(objDashboard.isUserPhotoDisplayed(), "User photo is not displayed");
@@ -90,7 +90,7 @@ public class LoginPageDefinitions {
         Assert.assertTrue(objDashboard.isUsernameDisplayed(), "Username is not displayed");
     }
 
-    // @Then("User should be able to see {string} notification message")
+    // @Then("The user should be able to see {string} notification message")
     // public void verifyErrorMessage(String notificationType) {
     // String actualErrorMessage = objLogin.getErrorMessage();
     // String expectedErrorMessage = "Kesalahan!";
@@ -104,12 +104,12 @@ public class LoginPageDefinitions {
     // }
     // }
 
-    @And("User clicks on Kursus Saya navigation")
+    @And("The user clicks on Kursus Saya navigation")
     public void click_kursus_saya_navigation() {
         objDashboard.clickedKursusSayaNav();
     }
 
-    @And("User clicks on Beranda navigation")
+    @And("The user clicks on Beranda navigation")
     public void click_beranda_navigation() {
         objDashboard.clickedBerandaNav();
     }
@@ -129,7 +129,7 @@ public class LoginPageDefinitions {
         Assert.assertFalse(listCourses.isEmpty(), "There's no course displayed");
     }
 
-    @And("User clicks on username")
+    @And("The user clicks on username")
     public void click_on_username() {
         objDashboard.clickOnSubMenuUsername();
     }

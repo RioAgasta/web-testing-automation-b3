@@ -28,7 +28,7 @@ public class HomePage extends BasePage {
     }
 
     public String getPageTitle() {
-        return pageTitle.getText();
+        return getText(pageTitle);
     }
 
     public int getNavItemCount() {
@@ -36,11 +36,11 @@ public class HomePage extends BasePage {
     }
 
     public boolean isUserPhotoDisplayed() {
-        return userPhoto.isDisplayed();
+        return isDisplayed(userPhoto);
     }
 
     public String getCourseSectionTitle() {
-        return courseSectionTitle.getText();
+        return getText(courseSectionTitle);
     }
 
     public int getCourseCount() {

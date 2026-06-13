@@ -1,13 +1,12 @@
 package stepdefinitions;
 
-import com.autotest.testng.utils.ConfigReader;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import pages.HomePage;
-import pages.LoginPage;
 import utils.DriverFactory;
+import utils.LoginUtil;
 
 import java.time.Duration;
 
@@ -17,12 +16,7 @@ public class HomeSteps {
 
     @Given("User is logged in")
     public void userIsLoggedIn() {
-        DriverFactory.getDriver().get(ConfigReader.getProperty("app.url"));
-        LoginPage loginPage = new LoginPage(DriverFactory.getDriver());
-        loginPage.enterEmail("bot@gmail.com");
-        loginPage.enterPassword("bot@123");
-        loginPage.clickLoginButton();
-        homePage = new HomePage(DriverFactory.getDriver());
+        homePage = LoginUtil.loginAndGoToHome();
     }
 
     @Then("User should see the course list")

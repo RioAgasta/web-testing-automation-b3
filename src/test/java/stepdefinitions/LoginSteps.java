@@ -9,6 +9,7 @@ import pages.HomePage;
 import pages.LoginPage;
 import utils.DriverFactory;
 
+
 public class LoginSteps {
 
     private LoginPage loginPage;
@@ -26,7 +27,7 @@ public class LoginSteps {
 
     @When("User enters a valid password")
     public void userEntersValidPassword() {
-        loginPage.enterPassword("masnasir");
+        loginPage.enterPassword(ConfigReader.getProperty("app.password"));
     }
 
     @When("User clicks the login button")

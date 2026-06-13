@@ -31,28 +31,28 @@ public class LoginPage extends BasePage {
     }
 
     public void enterEmail(String email) {
-        emailField.sendKeys(email);
+        sendKeys(emailField, email);
     }
 
     public void enterPassword(String password) {
-        passwordField.sendKeys(password);
+        sendKeys(passwordField, password);
     }
 
     public void clickLoginButton() {
-        loginButton.click();
+        click(loginButton);
     }
 
     public String getErrorMessage() {
-        return errorMessage.getText();
+        return getText(errorMessage);
     }
 
     public boolean isErrorMessageDisplayed() {
-        return errorMessage.isDisplayed();
+        return isDisplayed(errorMessage);
     }
 
     public String getValidationMessage() {
         try {
-            if (validationMessage.isDisplayed()) {
+            if (isDisplayed(validationMessage)) {
                 return validationMessage.getText();
             }
         } catch (Exception e) {

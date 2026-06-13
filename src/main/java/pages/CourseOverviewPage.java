@@ -39,38 +39,30 @@ public class CourseOverviewPage extends BasePage {
     }
 
     public void enterEnrollmentCode(String code) {
-        enrollmentCodeField.sendKeys(code);
+        sendKeys(enrollmentCodeField, code);
     }
 
     public void clickDaftarButton() {
-        daftarButton.click();
+        click(daftarButton);
     }
 
     public boolean isErrorMessageDisplayed() {
-        try {
-            return swalErrorText.isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
+        return isDisplayed(swalErrorText);
     }
 
     public String getErrorMessage() {
-        return swalErrorText.getText();
+        return getText(swalErrorText);
     }
 
     public void closeErrorMessage() {
         try {
-            swalConfirmButton.click();
+            click(swalConfirmButton);
         } catch (Exception ignored) {
         }
     }
 
     public boolean isOnCourseOverviewPage() {
-        try {
-            return courseInfoSection.isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
+        return isDisplayed(courseInfoSection);
     }
 
     public boolean isEnrollmentFormPresent() {
@@ -81,8 +73,7 @@ public class CourseOverviewPage extends BasePage {
         }
     }
 
-    public void backToDashboard() {
-        String url = com.autotest.testng.utils.ConfigReader.getProperty("app.url");
-        driver.get(url + "dashboard-pelajar");
+    public void backToDashboard(String dashboardUrl) {
+        driver.get(dashboardUrl);
     }
 }

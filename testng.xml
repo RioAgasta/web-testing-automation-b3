@@ -4,7 +4,7 @@
   <test name="Cucumber Reporting">
    
   <classes>
-  <class name="testng.runner.CucumberTestRunner"/>
+  <class name="runners.TestRunner"/>
   </classes>
   </test> <!-- Test -->
 </suite> <!-- Suite -->

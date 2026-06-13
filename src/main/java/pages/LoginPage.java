@@ -1,0 +1,76 @@
+package pages;
+
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+
+public class LoginPage extends BasePage {
+
+    @FindBy(xpath = "//input[@type='email']")
+    private WebElement emailField;
+
+    @FindBy(xpath = "//input[@type='password']")
+    private WebElement passwordField;
+
+    @FindBy(xpath = "//form//button[@type='submit']")
+    private WebElement loginButton;
+
+    @FindBy(xpath = "/html/body/div[2]/div/h2")
+    private WebElement errorMessage;
+
+    @FindBy(xpath = "//*[contains(@class,'error') or contains(@class,'validation') or contains(@class,'invalid-feedback')]")
+    private WebElement validationMessage;
+
+    public LoginPage(WebDriver driver) {
+        super(driver);
+    }
+
+    public void clearEmailField() {
+        emailField.clear();
+    }
+
+    public void enterEmail(String email) {
+        emailField.sendKeys(email);
+    }
+
+    public void enterPassword(String password) {
+        passwordField.sendKeys(password);
+    }
+
+    public void clickLoginButton() {
+        loginButton.click();
+    }
+
+    public String getErrorMessage() {
+        return errorMessage.getText();
+    }
+
+    public boolean isErrorMessageDisplayed() {
+        return errorMessage.isDisplayed();
+    }
+
+    public String getValidationMessage() {
+        try {
+            if (validationMessage.isDisplayed()) {
+                return validationMessage.getText();
+            }
+        } catch (Exception e) {
+        }
+        try {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            String msg = (String) js.executeScript(
+                "return arguments[0].validationMessage;", emailField
+            );
+            if (msg != null && !msg.isEmpty()) {
+                return msg;
+            }
+        } catch (Exception e) {
+        }
+        return "";
+    }
+
+    public boolean isValidationMessageDisplayed() {
+        return !getValidationMessage().isEmpty();
+    }
+}

@@ -35,10 +35,14 @@ public class LoginSteps {
         loginPage.clickLoginButton();
     }
 
-    @Then("System should display a validation message indicating the username is required")
-    public void systemShouldDisplayValidationMessage() {
-        Assert.assertTrue(loginPage.isValidationMessageDisplayed(),
-            "Validation message should be displayed when username is empty");
+    @Then("System should display error message {string}")
+    public void systemShouldDisplayErrorMessage(String expectedMessage) {
+        String actualMessage = loginPage.getErrorMessage();
+        if (actualMessage.isEmpty()) {
+            actualMessage = loginPage.getValidationMessage();
+        }
+        Assert.assertTrue(actualMessage.contains(expectedMessage),
+            "Expected error message to contain '" + expectedMessage + "' but got: " + actualMessage);
     }
 
     @When("User enters email {string} and password {string}")

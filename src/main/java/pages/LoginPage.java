@@ -16,8 +16,11 @@ public class LoginPage extends BasePage {
     @FindBy(xpath = "//form//button[@type='submit']")
     private WebElement loginButton;
 
-    @FindBy(xpath = "/html/body/div[2]/div/h2")
-    private WebElement errorMessage;
+    @FindBy(id = "swal2-title")
+    private WebElement errorTitle;
+
+    @FindBy(id = "swal2-html-container")
+    private WebElement errorMessageBody;
 
     @FindBy(xpath = "//*[contains(@class,'error') or contains(@class,'validation') or contains(@class,'invalid-feedback')]")
     private WebElement validationMessage;
@@ -43,11 +46,24 @@ public class LoginPage extends BasePage {
     }
 
     public String getErrorMessage() {
-        return getText(errorMessage);
+        try {
+            String title = isDisplayed(errorTitle) ? errorTitle.getText() : "";
+            String body = isDisplayed(errorMessageBody) ? errorMessageBody.getText() : "";
+            if (!title.isEmpty() && !body.isEmpty()) {
+                return title + " " + body;
+            }
+            return title + body;
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public boolean isErrorMessageDisplayed() {
-        return isDisplayed(errorMessage);
+        try {
+            return isDisplayed(errorTitle) || isDisplayed(errorMessageBody);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public String getValidationMessage() {

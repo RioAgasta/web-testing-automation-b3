@@ -6,4 +6,4 @@ Feature: Login Functionality
     When User leaves the username field empty
     And User enters a valid password
     And User clicks the login button
-    Then System should display a validation message indicating the username is required
+    Then System should display error message "Kesalahan! Gagal masuk, email harus diisi!"

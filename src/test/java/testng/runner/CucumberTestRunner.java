@@ -4,7 +4,7 @@ import io.cucumber.testng.AbstractTestNGCucumberTests;
 import io.cucumber.testng.CucumberOptions;
 import io.cucumber.testng.CucumberOptions.SnippetType;
 
-@CucumberOptions(tags = "@SuccessfulLogout", features = "src/test/features", glue = "testng.definitions", plugin = {
+@CucumberOptions(tags = "", features = "src/test/features", glue = "testng.definitions", plugin = {
     "pretty",
     "html:reports/test_report.html",
     "json:target/cucumber/test_report.json",

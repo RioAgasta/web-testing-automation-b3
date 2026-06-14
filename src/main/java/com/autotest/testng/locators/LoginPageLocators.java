@@ -19,4 +19,10 @@ public class LoginPageLocators {
   // @FindBy(xpath = "/html/body/div[2]/div/div[2]/div/div/div[2]/div/p")
   @FindBy(xpath = "/html/body/div[2]/div/h2")
   public WebElement errorMessage;
+
+  @FindBy(id = "swal2-title")
+  public WebElement swalErrorTitle;
+
+  @FindBy(id = "swal2-html-container")
+  public WebElement swalErrorMessageBody;
 }

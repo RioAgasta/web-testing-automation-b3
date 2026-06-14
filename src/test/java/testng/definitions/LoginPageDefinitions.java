@@ -147,4 +147,54 @@ public class LoginPageDefinitions {
         WebDriver driver = HelperClass.getDriver();
         driver.get(url);
     }
+
+    @Given("User is on the login page")
+    public void user_is_on_login_page() {
+        HelperClass.setUpDriver();
+        String url = ConfigReader.getProperty("app.url");
+        HelperClass.getDriver().get(url);
+    }
+
+    @When("User leaves the username field empty")
+    public void user_leaves_username_field_empty() {
+        objLogin.clearEmail();
+    }
+
+    @When("User enters a valid password")
+    public void user_enters_valid_password() {
+        String password = ConfigReader.getProperty("app.password");
+        objLogin.enterPassword(password);
+    }
+
+    @Then("System should display error message {string}")
+    public void system_should_display_error_message(String expectedMessage) {
+        String actualMessage = objLogin.getErrorMessage();
+        if (actualMessage.isEmpty()) {
+            actualMessage = objLogin.getValidationMessage();
+        }
+        Assert.assertTrue(actualMessage.contains(expectedMessage),
+            "Expected error message to contain '" + expectedMessage + "' but got: " + actualMessage);
+    }
+
+    @Given("User is logged in")
+    public void user_is_logged_in() {
+        HelperClass.setUpDriver();
+        String url = ConfigReader.getProperty("app.url");
+        HelperClass.getDriver().get(url);
+        objLogin.login(ConfigReader.getProperty("app.username"), ConfigReader.getProperty("app.password"));
+        objLogin.clickedLoginButton();
+    }
+
+    @Then("User should see the course list")
+    public void user_should_see_course_list() {
+        List<String> courses = objDashboard.getCourses();
+        Assert.assertFalse(courses.isEmpty(), "Course list should not be empty");
+    }
+
+    @Then("The page title should contain {string}")
+    public void page_title_should_contain(String title) {
+        String pageTitle = objDashboard.getPageTitle();
+        Assert.assertTrue(pageTitle.toLowerCase().contains(title.toLowerCase()),
+            "Page title should contain '" + title + "'. Actual: " + pageTitle);
+    }
 }

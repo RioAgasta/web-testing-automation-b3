@@ -30,10 +30,24 @@ Setup
 Running the tests
 -----------------
 
+Profiles
+--------
+
+| Profile | Command | Target URL |
+|---|---|---|
+| `fix` (default) | `mvn test` | `/jtk-learn/` |
+| `buggy` | `mvn test -P buggy` | `/jtk-learn-buggy/` |
+
 Run the full test suite with Maven:
 
 ```bash
 mvn clean test
+```
+
+Or use the convenience PowerShell script (sets Java & Maven automatically):
+
+```powershell
+.\run-tests.ps1
 ```
 
 Or run TestNG via your IDE using the `testng.xml` suite file at the project root.

@@ -14,34 +14,38 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
 public class DashboardActions {
-  DashboardLocators dashboardLocators = null;
+  private DashboardLocators dashboardLocators;
 
   public DashboardActions() {
+  }
 
-    this.dashboardLocators = new DashboardLocators();
-
-    PageFactory.initElements(HelperClass.getDriver(), dashboardLocators);
+  private DashboardLocators getLocators() {
+    if (dashboardLocators == null) {
+      dashboardLocators = new DashboardLocators();
+      PageFactory.initElements(HelperClass.getDriver(), dashboardLocators);
+    }
+    return dashboardLocators;
   }
 
   // Get the Username from Home Page
   public String getHomePageText() {
-    return dashboardLocators.homePageUserName.getText();
+    return getLocators().homePageUserName.getText();
   }
 
   public String getPageTitle() {
-    return dashboardLocators.homePageTitle.getText();
+    return getLocators().homePageTitle.getText();
   }
 
   public List<String> getSidebarItems() {
     try {
-      // Jika locator tidak menemukan elemen, dashboardLocators.courses akan menjadi
+      // Jika locator tidak menemukan elemen, getLocators().courses akan menjadi
       // list kosong.
-      if (dashboardLocators.navBarItems.isEmpty()) {
+      if (getLocators().navBarItems.isEmpty()) {
         return new ArrayList<>(); // Kembalikan list kosong secara eksplisit.
       }
 
       List<String> navBarTexts = new ArrayList<>();
-      for (WebElement item : dashboardLocators.navBarItems) {
+      for (WebElement item : getLocators().navBarItems) {
         navBarTexts.add(item.getText());
       }
       return navBarTexts;
@@ -54,7 +58,7 @@ public class DashboardActions {
 
   public boolean isUserPhotoDisplayed() {
     try {
-      return dashboardLocators.userPhoto.isDisplayed();
+      return getLocators().userPhoto.isDisplayed();
     } catch (NoSuchElementException e) {
       // Jika elemen tidak ada di DOM, maka ia tidak ditampilkan.
       return false;
@@ -63,7 +67,7 @@ public class DashboardActions {
 
   public boolean isUsernameDisplayed() {
     try {
-      return dashboardLocators.homePageUserName.isDisplayed();
+      return getLocators().homePageUserName.isDisplayed();
     } catch (NoSuchElementException e) {
       return false;
     }
@@ -71,17 +75,17 @@ public class DashboardActions {
 
   public void clickedKursusSayaNav() {
     // Click Login button
-    dashboardLocators.kursusSayaNav.click();
+    getLocators().kursusSayaNav.click();
   }
 
   public void clickedBerandaNav() {
     // Click Login button
-    dashboardLocators.berandaNav.click();
+    getLocators().berandaNav.click();
   }
 
   public String getCourseTitle() {
     try {
-      return dashboardLocators.courseTitle.getText();
+      return getLocators().courseTitle.getText();
     } catch (NoSuchElementException e) {
       // Jika elemen tidak ditemukan, kembalikan "kosong"
       // agar bisa di-assert di step definition.
@@ -91,14 +95,14 @@ public class DashboardActions {
 
   public List<String> getCourses() {
     try {
-      // Jika locator tidak menemukan elemen, dashboardLocators.courses akan menjadi
+      // Jika locator tidak menemukan elemen, getLocators().courses akan menjadi
       // list kosong.
-      if (dashboardLocators.courses.isEmpty()) {
+      if (getLocators().courses.isEmpty()) {
         return new ArrayList<>(); // Kembalikan list kosong secara eksplisit.
       }
 
       List<String> courses = new ArrayList<>();
-      for (WebElement item : dashboardLocators.courses) {
+      for (WebElement item : getLocators().courses) {
         courses.add(item.getText());
       }
       return courses;
@@ -110,12 +114,12 @@ public class DashboardActions {
   }
 
   // public boolean isCourseListVisible() {
-  // return !dashboardLocators.courses.isEmpty();
+  // return !getLocators().courses.isEmpty();
   // }
 
   public void clickOnSubMenuUsername() {
     try {
-      dashboardLocators.subMenuUsername.click();
+      getLocators().subMenuUsername.click();
     } catch (NoSuchElementException e) {
       // Jika elemen tidak ditemukan, abaikan aksi klik.
       // Bisa ditambahkan log untuk debugging.
@@ -125,7 +129,7 @@ public class DashboardActions {
 
   public boolean isKeluarDisplayed() {
     try {
-      return dashboardLocators.subMenuKeluar.isDisplayed();
+      return getLocators().subMenuKeluar.isDisplayed();
     } catch (NoSuchElementException e) {
       // Jika elemen tidak ada di DOM, maka ia tidak ditampilkan.
       return false;
@@ -180,16 +184,16 @@ public class DashboardActions {
 
   public List<Course> getAllDisplayedCourses() {
     List<Course> uiCourses = new ArrayList<>();
-    List<WebElement> courseCardElements = dashboardLocators.courses;
+    List<WebElement> courseCardElements = getLocators().courses;
 
     // System.out.println("Found " + courseCardElements.size() + " course card
     // containers on the UI.");
 
     for (WebElement cardElement : courseCardElements) {
       try {
-        WebElement courseImageElement = cardElement.findElement(dashboardLocators.courseImage);
-        WebElement courseNameElement = cardElement.findElement(dashboardLocators.courseName);
-        WebElement instructorNameElement = cardElement.findElement(dashboardLocators.instructorName);
+        WebElement courseImageElement = cardElement.findElement(getLocators().courseImage);
+        WebElement courseNameElement = cardElement.findElement(getLocators().courseName);
+        WebElement instructorNameElement = cardElement.findElement(getLocators().instructorName);
 
         String imageUrl = courseImageElement.getDomProperty("src");
         String namaCourse = courseNameElement.getText().trim();
@@ -218,13 +222,13 @@ public class DashboardActions {
   }
 
   public void clickOnPemantauan() {
-    dashboardLocators.pemantauanNav.click();
+    getLocators().pemantauanNav.click();
   }
 
   public void clickNavigationMenu(String menuName) {
     try {
       // Find the navigation item by its text
-      WebElement navItem = dashboardLocators.navBarItems.stream()
+      WebElement navItem = getLocators().navBarItems.stream()
           .filter(item -> item.getText().equalsIgnoreCase(menuName))
           .findFirst()
           .orElseThrow(() -> new NoSuchElementException("Navigation item '" + menuName + "' not found"));
@@ -242,7 +246,7 @@ public class DashboardActions {
     try {
       clickOnSubMenuUsername(); // Klik untuk membuka dropdown
       if (isKeluarDisplayed()) {
-        dashboardLocators.subMenuKeluar.click(); // Klik opsi "Keluar"
+        getLocators().subMenuKeluar.click(); // Klik opsi "Keluar"
       } else {
         System.err.println("Sub menu 'Keluar' tidak ditemukan setelah membuka dropdown.");
       }

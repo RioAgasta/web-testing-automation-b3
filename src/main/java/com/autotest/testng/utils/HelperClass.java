@@ -1,16 +1,14 @@
 // In: utils/HelperClass.java
 package com.autotest.testng.utils;
 
-// import io.github.bonigarcia.wdm.WebDriverManager;
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeOptions;
-// import org.openqa.selenium.chrome.ChromeDriver;
-// import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.autotest.testng.locators.MyCourseLocators;
@@ -25,15 +23,31 @@ public class HelperClass {
 
   public static void setUpDriver() {
     if (driver == null) {
-      // Initialize driver
-      System.setProperty("webdriver.edge.driver", "drivers/msedgedriver.exe");
+      WebDriverManager.chromedriver().setup();
 
-      EdgeOptions options = new EdgeOptions();
-      driver = new EdgeDriver(options);
+      ChromeOptions options = new ChromeOptions();
+      options.addArguments("--start-maximized");
+      options.addArguments("--disable-blink-features=AutomationControlled");
+      options.addArguments("--disable-password-manager-reauthentication");
+      options.addArguments("--disable-save-password-bubble");
+      options.addArguments("--disable-password-leak-detection");
+      options.addArguments("--disable-password-generation");
+      options.addArguments("--disable-password-import");
+      options.setExperimentalOption("excludeSwitches", new String[]{
+          "enable-automation", "save-password", "password-manager-redirect",
+          "enable-password-change"
+      });
+      options.setExperimentalOption("prefs", new java.util.HashMap<String, Object>() {{
+        put("credentials_enable_service", false);
+        put("profile.password_manager_enabled", false);
+        put("profile.default_content_setting_values.notifications", 2);
+        put("safebrowsing.enabled", false);
+        put("safebrowsing.esb.enabled", false);
+        put("profile.password_manager_leak_detection", false);
+      }});
+
+      driver = new ChromeDriver(options);
       driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(TIMEOUT));
-      // Remove navigator.webdriver via JS
-      ((JavascriptExecutor) driver).executeScript(
-          "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})");
 
       driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(TIMEOUT));
       driver.manage().window().maximize();

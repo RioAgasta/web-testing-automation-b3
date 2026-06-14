@@ -1,5 +1,7 @@
 package com.autotest.testng.actions;
 
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.support.PageFactory;
 import com.autotest.testng.locators.LoginPageLocators;
 import com.autotest.testng.utils.HelperClass;
@@ -22,23 +24,53 @@ public class LoginPageActions {
   }
 
   public void login(String strUserName, String strPassword) {
-
-    // Fill username
     getLocators().email.sendKeys(strUserName);
-
-    // Fill password
     getLocators().password.sendKeys(strPassword);
+  }
 
+  public void enterEmail(String email) {
+    getLocators().email.sendKeys(email);
+  }
+
+  public void enterPassword(String password) {
+    getLocators().password.sendKeys(password);
+  }
+
+  public void clearEmail() {
+    getLocators().email.clear();
   }
 
   public void clickedLoginButton() {
-    // Click Login button
     getLocators().login.click();
   }
 
-  // Get the error message of Login Page
   public String getErrorMessage() {
-    return getLocators().errorMessage.getText();
+    try {
+      String title = getLocators().swalErrorTitle.getText();
+      String body = getLocators().swalErrorMessageBody.getText();
+      if (!title.isEmpty() && !body.isEmpty()) {
+        return title + " " + body;
+      }
+      return title + body;
+    } catch (Exception e) {
+      try {
+        return getLocators().errorMessage.getText();
+      } catch (NoSuchElementException ex) {
+        return "";
+      }
+    }
   }
 
+  public String getValidationMessage() {
+    try {
+      JavascriptExecutor js = (JavascriptExecutor) HelperClass.getDriver();
+      String msg = (String) js.executeScript(
+          "return arguments[0].validationMessage;", getLocators().email);
+      if (msg != null && !msg.isEmpty()) {
+        return msg;
+      }
+    } catch (Exception e) {
+    }
+    return "";
+  }
 }

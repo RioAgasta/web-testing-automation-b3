@@ -55,13 +55,15 @@ public class LoginPageDefinitions {
             // 1. Buat objek wait dengan durasi timeout (misalnya 10 detik)
             WebDriverWait wait = new WebDriverWait(HelperClass.getDriver(), Duration.ofSeconds(10));
 
-            // 2. Perintahkan Selenium untuk menunggu sampai URL mengandung "dashboard-pelajar"
+            // 2. Perintahkan Selenium untuk menunggu sampai URL mengandung
+            // "dashboard-pelajar"
             wait.until(ExpectedConditions.urlContains("dashboard-pelajar"));
 
             // 3. (Opsional) Lakukan assertion tambahan jika diperlukan
             // Jika baris di atas berhasil, berarti URL sudah benar.
             String currentUrl = HelperClass.getDriver().getCurrentUrl();
-            Assert.assertTrue(currentUrl.contains("dashboard-pelajar"), "URL tidak mengandung 'dashboard-pelajar' setelah menunggu.");
+            Assert.assertTrue(currentUrl.contains("dashboard-pelajar"),
+                    "URL tidak mengandung 'dashboard-pelajar' setelah menunggu.");
 
         } catch (Exception e) {
             // Jika setelah 10 detik URL tidak juga berubah, tes akan gagal di sini.
@@ -137,5 +139,12 @@ public class LoginPageDefinitions {
     @And("Sub menu keluar is displayed")
     public void keluar_displayed() {
         Assert.assertTrue(objDashboard.isKeluarDisplayed(), "Sub menu Keluar is not displayed");
+    }
+
+    @Then("The user should be redirected to the login page")
+    public void The_user_should_be_redirected_to_the_login_page() {
+        String url = ConfigReader.getProperty("app.url");
+        WebDriver driver = HelperClass.getDriver();
+        driver.get(url);
     }
 }

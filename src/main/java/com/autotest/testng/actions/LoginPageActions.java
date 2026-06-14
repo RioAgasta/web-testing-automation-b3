@@ -6,41 +6,39 @@ import com.autotest.testng.utils.HelperClass;
 
 public class LoginPageActions {
 
-    private LoginPageLocators loginPageLocators;
+  private LoginPageLocators loginPageLocators;
 
-    public LoginPageActions() {
+  public LoginPageActions() {
+  }
+
+  private LoginPageLocators getLocators() {
+    if (loginPageLocators == null) {
+      loginPageLocators = new LoginPageLocators();
+      PageFactory.initElements(
+          HelperClass.getDriver(),
+          loginPageLocators);
     }
+    return loginPageLocators;
+  }
 
-    private LoginPageLocators getLocators() {
-        if (loginPageLocators == null) {
-            loginPageLocators = new LoginPageLocators();
-            PageFactory.initElements(
-                HelperClass.getDriver(),
-                loginPageLocators
-            );
-        }
-        return loginPageLocators;
-    }
+  public void login(String strUserName, String strPassword) {
 
-    public void login(String strUserName, String strPassword) {
+    // Fill username
+    getLocators().email.sendKeys(strUserName);
 
-        // Fill username
-        getLocators().email.sendKeys(strUserName);
+    // Fill password
+    getLocators().password.sendKeys(strPassword);
 
-        // Fill password
-        getLocators().password.sendKeys(strPassword);
+  }
 
-    }
+  public void clickedLoginButton() {
+    // Click Login button
+    getLocators().login.click();
+  }
 
-    public void clickedLoginButton() {
-        // Click Login button
-        getLocators().login.click();
-    }
-
-
-    // Get the error message of Login Page
-    public String getErrorMessage() {
-        return getLocators().errorMessage.getText();
-    }
+  // Get the error message of Login Page
+  public String getErrorMessage() {
+    return getLocators().errorMessage.getText();
+  }
 
 }
